@@ -6,12 +6,44 @@ on:
   pull_request:
     branches: [main, master]
 
+# Cancel in-progress runs for the same ref
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GO_VERSION: '1.24'
+
 jobs:
-  build:
+  # Quick lint check (runs first, fails fast)
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m
+
+  # Build and test across multiple OS (conditional matrix)
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: lint
     strategy:
+      fail-fast: false
       matrix:
-        go-version: ['1.24', '1.25']
+        # PR: Ubuntu only for speed, Push: all platforms
+        os: ${{ github.event_name == 'pull_request' && fromJSON('["ubuntu-latest"]') || fromJSON('["ubuntu-latest", "macos-latest", "windows-latest"]') }}
+        go-version: ['1.24']
 
     steps:
       - uses: actions/checkout@v4
@@ -27,31 +59,60 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
+            ~/Library/Caches/go-build
+            ~\AppData\Local\go-build
           key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-${{ matrix.go-version }}-
 
       - name: Download dependencies
-        run: make deps
+        run: go mod download
 
       - name: Build
-        run: make build
+        run: go build -v ./...
 
       - name: Test
-        run: make test
+        run: go test -v -race -coverprofile=coverage.out ./...
 
-  lint:
+      - name: Upload coverage (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.out
+          fail_ci_if_error: false
+
+  # Verify compilation for all packages
+  compile-check:
+    name: Compile Check
     runs-on: ubuntu-latest
+    needs: lint
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24'
+          go-version: ${{ env.GO_VERSION }}
 
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v6
+      - name: Verify all packages compile
+        run: |
+          go build ./...
+          go vet ./...
+
+  # Security scanning
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
-          version: latest
-          args: --timeout=5m
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Run Gosec
+        uses: securego/gosec@master
+        with:
+          args: -exclude-generated ./...

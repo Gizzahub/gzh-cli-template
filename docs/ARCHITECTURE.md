@@ -5,43 +5,74 @@
 ```
 gzh-cli-__PROJECT_NAME__/
 │
+├── .github/                      # GitHub Configuration
+│   ├── workflows/
+│   │   ├── ci.yml               # CI pipeline (multi-OS, lint, security)
+│   │   └── release.yml          # Release automation
+│   ├── dependabot.yml           # Dependency updates
+│   ├── ISSUE_TEMPLATE/          # Issue templates
+│   └── PULL_REQUEST_TEMPLATE.md # PR template
+│
+├── .make/                        # Modular Makefile
+│   ├── vars.mk                  # Common variables
+│   ├── build.mk                 # Build targets
+│   ├── test.mk                  # Testing targets
+│   ├── quality.mk               # Code quality
+│   ├── deps.mk                  # Dependencies
+│   ├── tools.mk                 # Tool installation
+│   └── dev.mk                   # Development workflow
+│
 ├── cmd/                          # CLI Commands
-│   ├── AGENTS_COMMON.md          # Common AI guidelines for all modules
-│   └── __PROJECT_NAME__/         # Main CLI module
-│       ├── AGENTS.md             # Module-specific AI guide
-│       ├── main.go               # Entry point
-│       ├── root.go               # Root command + subcommands
-│       └── version.go            # Version management
+│   ├── AGENTS_COMMON.md         # Common AI guidelines
+│   └── __PROJECT_NAME__/        # Main CLI module
+│       ├── AGENTS.md            # Module-specific AI guide
+│       ├── main.go              # Entry point
+│       ├── root.go              # Root command + subcommands
+│       └── version.go           # Version management
 │
-├── internal/                     # Private Packages (not importable)
-│   └── core/                     # Core business logic
-│       ├── core.go               # Service interfaces & implementations
-│       └── core_test.go          # Unit tests
+├── internal/                     # Private Packages
+│   ├── config/                  # Configuration management
+│   │   ├── config.go            # Config loader & types
+│   │   └── config_test.go       # Tests
+│   ├── core/                    # Core business logic
+│   │   ├── core.go              # Service interfaces
+│   │   └── core_test.go         # Tests
+│   ├── errors/                  # Custom error types
+│   │   ├── errors.go            # Error definitions
+│   │   └── errors_test.go       # Tests
+│   ├── logger/                  # Logging utilities
+│   │   ├── logger.go            # Structured logger
+│   │   └── logger_test.go       # Tests
+│   └── testutil/                # Test utilities
+│       ├── testutil.go          # Common test helpers
+│       └── builders/            # Fluent test builders
+│           ├── builder.go       # Builder patterns
+│           └── builder_test.go  # Tests
 │
-├── pkg/                          # Public Packages (importable by others)
-│   └── api/                      # Public API interfaces
-│       └── api.go                # Client & types
+├── pkg/                          # Public Packages
+│   └── api/                     # Public API interfaces
+│       └── api.go               # Client & types
 │
-├── docs/                         # Documentation
-│   ├── README.md                 # Docs index
-│   └── ARCHITECTURE.md           # This file
+├── docs/                         # Documentation (hierarchical)
+│   ├── 00-overview/             # Overview & introduction
+│   ├── 10-getting-started/      # Installation, quick start
+│   ├── 20-architecture/         # Architecture docs
+│   ├── 30-features/             # Feature documentation
+│   ├── 40-configuration/        # Configuration reference
+│   ├── README.md                # Docs index
+│   └── ARCHITECTURE.md          # This file
 │
 ├── examples/                     # Usage Examples
-│   ├── README.md                 # Examples overview
-│   └── config.yaml.example       # Configuration template
+│   ├── README.md                # Examples overview
+│   └── config.yaml.example      # Configuration template
 │
 ├── scripts/                      # Helper Scripts
-│   ├── init-project.sh           # Project initializer (template)
-│   └── install.sh                # Installation helper
+│   ├── init-project.sh          # Template initializer
+│   └── install.sh               # Installation helper
 │
 ├── tests/                        # Test Suites
-│   ├── integration/              # Integration tests
-│   └── e2e/                      # End-to-end tests
-│
-├── .github/                      # GitHub Configuration
-│   ├── workflows/ci.yml          # CI pipeline
-│   ├── ISSUE_TEMPLATE/           # Issue templates
-│   └── PULL_REQUEST_TEMPLATE.md  # PR template
+│   ├── integration/             # Integration tests
+│   └── e2e/                     # End-to-end tests
 │
 ├── .claudeignore                 # Files AI should not modify
 ├── .gitignore                    # Git ignore patterns
@@ -52,7 +83,7 @@ gzh-cli-__PROJECT_NAME__/
 ├── CLAUDE.md                     # AI Development Guide
 ├── CONTRIBUTING.md               # Contribution guidelines
 ├── LICENSE                       # MIT License
-├── Makefile                      # Build automation
+├── Makefile                      # Build automation (modular)
 ├── README.md                     # Project overview
 └── go.mod                        # Go module definition
 ```
@@ -71,8 +102,11 @@ gzh-cli-__PROJECT_NAME__/
                       ▼
 ┌─────────────────────────────────────────────────────┐
 │                   Internal Layer                     │
-│                    internal/core/                    │
-│           (Business logic, services)                 │
+│                      internal/                       │
+│        ┌─────────────────────────────────┐          │
+│        │ config/ │ core/ │ errors/ │ logger/ │      │
+│        └─────────────────────────────────┘          │
+│           (Business logic, utilities)                │
 └─────────────────────┬───────────────────────────────┘
                       │
                       ▼
@@ -85,6 +119,19 @@ gzh-cli-__PROJECT_NAME__/
 
 ---
 
+## Internal Packages
+
+| Package | Purpose | Key Types |
+|---------|---------|-----------|
+| `config` | Configuration management | `Config`, `Load()`, `Save()` |
+| `core` | Core business logic | `Service` interface |
+| `errors` | Custom error types | `ErrNotFound`, `Wrap()` |
+| `logger` | Structured logging | `Logger` interface, `SimpleLogger` |
+| `testutil` | Test utilities | `TempFile()`, `AssertEqual()` |
+| `testutil/builders` | Fluent test fixtures | `ConfigBuilder`, `CommandBuilder` |
+
+---
+
 ## Key Design Principles
 
 ### 1. Interface-Driven Design
@@ -94,10 +141,6 @@ gzh-cli-__PROJECT_NAME__/
 type Service interface {
     Process(input string) (string, error)
 }
-
-// Implement in separate files
-type DefaultService struct{}
-func (s *DefaultService) Process(input string) (string, error) { ... }
 ```
 
 ### 2. Dependency Injection
@@ -112,13 +155,21 @@ func NewService(config Config, logger Logger) *Service {
 ### 3. Error Handling
 
 ```go
-// Wrap errors with context
-if err != nil {
-    return fmt.Errorf("operation failed: %w", err)
-}
+// Use custom error types
+import "github.com/gizzahub/gzh-cli-__PROJECT_NAME__/internal/errors"
 
-// Define domain errors
-var ErrNotFound = errors.New("resource not found")
+if err != nil {
+    return errors.WrapWithMessage(err, "operation failed")
+}
+```
+
+### 4. Structured Logging
+
+```go
+import "github.com/gizzahub/gzh-cli-__PROJECT_NAME__/internal/logger"
+
+log := logger.New("mycomponent")
+log.Info("operation complete", "count", 42)
 ```
 
 ---
@@ -135,23 +186,52 @@ User Input → CLI (cmd/) → Service (internal/) → Output
 
 ## Testing Strategy
 
-| Layer | Test Type | Location |
-|-------|-----------|----------|
-| cmd/ | Unit + Integration | cmd/*_test.go |
-| internal/ | Unit | internal/*/*_test.go |
-| pkg/ | Unit | pkg/*/*_test.go |
-| Integration | Docker-based | tests/integration/ |
-| E2E | Full workflow | tests/e2e/ |
+| Layer | Test Type | Location | Coverage Target |
+|-------|-----------|----------|-----------------|
+| cmd/ | Unit + Integration | cmd/*_test.go | 70%+ |
+| internal/ | Unit | internal/*/*_test.go | 80%+ |
+| pkg/ | Unit | pkg/*/*_test.go | 85%+ |
+| Integration | Docker-based | tests/integration/ | - |
+| E2E | Full workflow | tests/e2e/ | - |
+
+### Test Utilities
+
+```go
+import "github.com/gizzahub/gzh-cli-__PROJECT_NAME__/internal/testutil"
+
+func TestSomething(t *testing.T) {
+    // Create temp file
+    path := testutil.TempFile(t, "test.yaml", "key: value")
+
+    // Assert helpers
+    testutil.AssertNoError(t, err)
+    testutil.AssertEqual(t, got, want)
+}
+```
 
 ---
 
 ## Configuration
 
 Priority (highest to lowest):
-1. CLI flags
-2. Environment variables
-3. Config file (~/.config/gz-__PROJECT_NAME__/config.yaml)
+1. CLI flags (`--verbose`, `--debug`)
+2. Environment variables (`GZ___PROJECT_NAME___DEBUG=true`)
+3. Config file (`~/.config/gz-__PROJECT_NAME__/config.yaml`)
 4. Defaults
+
+---
+
+## Build Automation
+
+```bash
+# Modular Makefile structure
+make help           # Show all targets
+make build          # Build binary
+make test           # Run tests
+make quality        # fmt + lint + test
+make install-tools  # Install dev tools
+make release-dry    # Test release
+```
 
 ---
 
