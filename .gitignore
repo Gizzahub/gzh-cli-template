@@ -65,3 +65,7 @@ cache/
 # Release artifacts
 *.tar.gz
 *.zip
+
+# test
+tmp/
+

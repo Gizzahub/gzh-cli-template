@@ -1,12 +1,11 @@
-// Package config provides configuration management utilities.
+// Package config provides application-specific configuration.
 package config
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
-	"gopkg.in/yaml.v3"
+	coreconfig "github.com/gizzahub/gzh-cli-core/config"
 )
 
 // Config represents the application configuration.
@@ -42,33 +41,28 @@ func DefaultConfig() *Config {
 	}
 }
 
+// appName is the application name for config paths.
+const appName = "__PROJECT_NAME__"
+
 // Load reads configuration from the given path.
 func Load(path string) (*Config, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("reading config file: %w", err)
-	}
-
+	loader := coreconfig.NewLoader(appName)
 	cfg := DefaultConfig()
-	if err := yaml.Unmarshal(data, cfg); err != nil {
-		return nil, fmt.Errorf("parsing config file: %w", err)
+	if err := loader.LoadFrom(path, cfg); err != nil {
+		return nil, err
 	}
-
 	return cfg, nil
 }
 
 // LoadOrDefault loads configuration from the default locations,
 // falling back to default config if not found.
 func LoadOrDefault() (*Config, error) {
-	paths := ConfigPaths()
-
-	for _, path := range paths {
-		if _, err := os.Stat(path); err == nil {
-			return Load(path)
-		}
+	loader := coreconfig.NewLoader(appName).WithPaths(ConfigPaths()...)
+	cfg := DefaultConfig()
+	if err := loader.LoadOrDefault(cfg); err != nil {
+		return nil, err
 	}
-
-	return DefaultConfig(), nil
+	return cfg, nil
 }
 
 // ConfigPaths returns the list of config file paths to search.
@@ -76,11 +70,11 @@ func ConfigPaths() []string {
 	var paths []string
 
 	// Current directory
-	paths = append(paths, "./__PROJECT_NAME__.yml", "./__PROJECT_NAME__.yaml")
+	paths = append(paths, "./"+appName+".yml", "./"+appName+".yaml")
 
 	// Home directory
 	if home, err := os.UserHomeDir(); err == nil {
-		configDir := filepath.Join(home, ".config", "gz-__PROJECT_NAME__")
+		configDir := filepath.Join(home, ".config", "gz-"+appName)
 		paths = append(paths,
 			filepath.Join(configDir, "config.yml"),
 			filepath.Join(configDir, "config.yaml"),
@@ -92,22 +86,7 @@ func ConfigPaths() []string {
 
 // Save writes configuration to the given path.
 func (c *Config) Save(path string) error {
-	// Ensure directory exists
-	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return fmt.Errorf("creating config directory: %w", err)
-	}
-
-	data, err := yaml.Marshal(c)
-	if err != nil {
-		return fmt.Errorf("marshaling config: %w", err)
-	}
-
-	if err := os.WriteFile(path, data, 0o644); err != nil {
-		return fmt.Errorf("writing config file: %w", err)
-	}
-
-	return nil
+	return coreconfig.Save(path, c)
 }
 
 // Get retrieves a setting value by key.

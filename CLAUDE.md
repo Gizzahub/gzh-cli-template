@@ -16,8 +16,30 @@ This file provides LLM-optimized guidance for Claude Code when working with this
 - **Interface-driven design**: Use Go interfaces for abstraction
 - **Direct constructors**: No DI containers, simple factory pattern
 - **Modular commands**: Each command is self-contained under `cmd/`
-- **Structured errors**: Use `internal/errors` for custom error types
-- **Structured logging**: Use `internal/logger` for consistent logging
+- **Use shared library**: Common utilities from `gzh-cli-core`
+
+---
+
+## Shared Library (gzh-cli-core)
+
+**IMPORTANT**: Use `gzh-cli-core` for common utilities. DO NOT create local duplicates.
+
+| Package | Import | Purpose |
+|---------|--------|---------|
+| logger | `gzh-cli-core/logger` | Structured logging |
+| testutil | `gzh-cli-core/testutil` | Test helpers (TempDir, Assert*, Capture) |
+| errors | `gzh-cli-core/errors` | Error types and wrapping |
+| config | `gzh-cli-core/config` | Config loading utilities |
+| cli | `gzh-cli-core/cli` | CLI flags and output |
+| version | `gzh-cli-core/version` | Version info |
+
+```go
+import (
+    "github.com/gizzahub/gzh-cli-core/logger"
+    "github.com/gizzahub/gzh-cli-core/errors"
+    "github.com/gizzahub/gzh-cli-core/testutil"
+)
+```
 
 ---
 
@@ -36,12 +58,11 @@ This file provides LLM-optimized guidance for Claude Code when working with this
 
 | Package | Purpose | Usage |
 |---------|---------|-------|
-| `internal/config` | Configuration management | `config.Load()`, `config.Save()` |
+| `internal/config` | App-specific configuration | `config.Load()`, `config.Save()` |
 | `internal/core` | Core business logic | Service interfaces |
-| `internal/errors` | Custom error types | `errors.Wrap()`, `errors.ErrNotFound` |
-| `internal/logger` | Structured logging | `logger.New()`, `logger.Info()` |
-| `internal/testutil` | Test utilities | `testutil.TempFile()`, `testutil.AssertEqual()` |
 | `internal/testutil/builders` | Test fixtures | `builders.NewConfigBuilder()` |
+
+**Note**: Logger, errors, testutil are from `gzh-cli-core` (see Shared Library section)
 
 ---
 
@@ -126,11 +147,9 @@ make quality    # Full quality check
 │       ├── root.go             # Root command
 │       └── version.go          # Version management
 ├── internal/                    # Private packages
-│   ├── config/                 # Configuration
+│   ├── config/                 # App-specific configuration
 │   ├── core/                   # Core business logic
-│   ├── errors/                 # Custom error types
-│   ├── logger/                 # Structured logging
-│   └── testutil/               # Test utilities
+│   └── testutil/
 │       └── builders/           # Test fixture builders
 ├── pkg/                         # Public APIs
 │   └── api/                    # Exported interfaces
@@ -204,10 +223,13 @@ A: `internal/{feature}/` directory
 A: `pkg/{api}/` directory
 
 **Q: How to handle errors?**
-A: Use `internal/errors` - `errors.Wrap()`, `errors.WrapWithMessage()`
+A: Use `gzh-cli-core/errors` - `errors.Wrap()`, `errors.WrapWithMessage()`
 
 **Q: How to add logging?**
-A: Use `internal/logger` - `log := logger.New("component")`
+A: Use `gzh-cli-core/logger` - `log := logger.New("component")`
+
+**Q: How to write tests?**
+A: Use `gzh-cli-core/testutil` - `testutil.TempDir()`, `testutil.AssertEqual()`
 
 **Q: What files should AI not modify?**
 A: See `.claudeignore`
