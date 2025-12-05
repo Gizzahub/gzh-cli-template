@@ -1,0 +1,67 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/build/
+/bin/
+/dist/
+
+# Test files
+*.test
+coverage.out
+coverage.html
+coverage.txt
+*.coverprofile
+
+# Benchmark files
+bench.txt
+bench-new.txt
+
+# Dependency directories
+vendor/
+
+# IDE and editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Go specific
+go.work
+go.work.sum
+
+# Debug
+debug
+*.log
+
+# Local development
+.env
+.env.local
+*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Cache
+.cache/
+cache/
+
+# Release artifacts
+*.tar.gz
+*.zip
