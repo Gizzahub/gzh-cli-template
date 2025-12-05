@@ -1,0 +1,14 @@
+# gz-__PROJECT_NAME__ Configuration Example
+# Copy this file to ~/.config/gz-__PROJECT_NAME__/config.yaml
+
+# General settings
+verbose: false
+debug: false
+
+# Output format: json, yaml, text
+output: text
+
+# Add your project-specific configuration below
+# example:
+#   option1: value1
+#   option2: value2

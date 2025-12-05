@@ -1,25 +1,28 @@
 # Documentation
 
-This directory contains project documentation.
+Documentation for gzh-cli-__PROJECT_NAME__.
 
-## Structure
+## Contents
 
-```
-docs/
-├── README.md           # This file
-├── architecture.md     # Architecture overview (optional)
-├── api.md             # API documentation (optional)
-└── guides/            # User guides (optional)
-```
+| Document | Description |
+|----------|-------------|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | System architecture and directory structure |
+| [../README.md](../README.md) | Project overview and quick start |
+| [../CONTRIBUTING.md](../CONTRIBUTING.md) | Contribution guidelines |
+| [../CLAUDE.md](../CLAUDE.md) | AI development guide |
+| [../examples/README.md](../examples/README.md) | Usage examples |
+
+## AI Development Guides
+
+| Guide | Location | Purpose |
+|-------|----------|---------|
+| CLAUDE.md | Project root | Main AI development guide |
+| AGENTS_COMMON.md | cmd/ | Common rules for all modules |
+| AGENTS.md | cmd/__PROJECT_NAME__/ | Module-specific rules |
 
 ## Quick Links
 
-- [Main README](../README.md)
-- [Contributing](../CONTRIBUTING.md)
-- [Claude Guide](../CLAUDE.md)
-
-## Adding Documentation
-
-1. Create `.md` files in this directory
-2. Use clear, descriptive names
-3. Link from main README if user-facing
+- **Getting Started**: See main [README.md](../README.md)
+- **Architecture**: See [ARCHITECTURE.md](ARCHITECTURE.md)
+- **Examples**: See [examples/](../examples/)
+- **API Reference**: See [pkg/api/](../pkg/api/)

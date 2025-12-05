@@ -19,12 +19,23 @@ This file provides LLM-optimized guidance for Claude Code when working with this
 
 ---
 
+## Module-Specific Guides (AGENTS.md)
+
+**Read these before modifying code:**
+
+| Guide | Location | Purpose |
+|-------|----------|---------|
+| Common Rules | `cmd/AGENTS_COMMON.md` | Project-wide conventions |
+| CLI Module | `cmd/__PROJECT_NAME__/AGENTS.md` | CLI-specific rules |
+
+---
+
 ## Development Workflow
 
 ### Before Code Modification
 
-1. Read existing code patterns
-2. Check test coverage requirements
+1. **Read AGENTS.md** for the module you're modifying
+2. Check existing code patterns
 3. Review CONTRIBUTING.md for guidelines
 
 ### Code Modification Process
@@ -52,6 +63,9 @@ make quality    # runs fmt + lint + test
 # Build & install
 make build
 make install
+
+# Release (dry run)
+goreleaser release --snapshot --clean
 ```
 
 ### Testing
@@ -84,21 +98,31 @@ make quality    # All quality checks
 
 ```
 .
-├── cmd/__PROJECT_NAME__/
-│   ├── main.go          # Entry point
-│   ├── root.go          # Root command
-│   └── version.go       # Version management
-├── internal/            # Private packages
-│   └── core/            # Core business logic
-├── pkg/                 # Public APIs
-│   └── api/             # Exported interfaces
-├── docs/                # Documentation
-├── scripts/             # Helper scripts
-├── tests/               # Integration/E2E tests
-├── CLAUDE.md            # This file
-├── go.mod               # Go module
-├── Makefile             # Build automation
-└── README.md            # Project documentation
+├── cmd/
+│   ├── AGENTS_COMMON.md         # Common AI guidelines
+│   └── __PROJECT_NAME__/
+│       ├── AGENTS.md            # Module-specific guide
+│       ├── main.go              # Entry point
+│       ├── root.go              # Root command
+│       └── version.go           # Version management
+├── internal/                    # Private packages
+│   └── core/                    # Core business logic
+├── pkg/                         # Public APIs
+│   └── api/                     # Exported interfaces
+├── docs/
+│   ├── README.md                # Docs index
+│   └── ARCHITECTURE.md          # Architecture overview
+├── examples/                    # Usage examples
+├── scripts/                     # Helper scripts
+├── tests/                       # Integration/E2E tests
+├── .claudeignore                # AI-excluded files
+├── .golangci.yml                # Linter config (v2)
+├── .goreleaser.yml              # Release automation
+├── .pre-commit-config.yaml      # Pre-commit hooks
+├── CLAUDE.md                    # This file
+├── go.mod                       # Go module
+├── Makefile                     # Build automation
+└── README.md                    # Project documentation
 ```
 
 ---
@@ -107,6 +131,7 @@ make quality    # All quality checks
 
 ### Critical Requirements
 
+- **Read AGENTS.md** before modifying any module
 - Always run `make quality` before commit
 - Test coverage: 80%+ for core logic
 - Korean comments allowed for documentation
@@ -136,13 +161,16 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ## FAQ
 
 **Q: Where to add new commands?**
-A: `cmd/__PROJECT_NAME__/` - add new Command structs in root.go or separate files
+A: `cmd/__PROJECT_NAME__/` - see `cmd/__PROJECT_NAME__/AGENTS.md`
 
 **Q: Where to add internal logic?**
 A: `internal/{feature}/` directory
 
 **Q: Where to add public APIs?**
 A: `pkg/{api}/` directory
+
+**Q: What files should AI not modify?**
+A: See `.claudeignore`
 
 ---
 
