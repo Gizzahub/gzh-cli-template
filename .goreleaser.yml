@@ -8,6 +8,9 @@ project_name: gz-__PROJECT_NAME__
 before:
   hooks:
     - go mod tidy
+    - go generate ./...
+    # Uncomment when completions are implemented in your CLI
+    # - ./scripts/completions.sh
 
 builds:
   - id: gz-__PROJECT_NAME__
@@ -40,27 +43,116 @@ archives:
     files:
       - LICENSE
       - README.md
+      - CHANGELOG.md
+      # Uncomment when completions are implemented
+      # - completions/*
 
 checksum:
   name_template: 'checksums.txt'
+
+# Generate SBOM (Software Bill of Materials)
+sboms:
+  - artifacts: archive
 
 snapshot:
   version_template: "{{ incpatch .Version }}-next"
 
 changelog:
   sort: asc
+  use: github
   filters:
     exclude:
-      - '^docs:'
       - '^test:'
-      - '^chore:'
+      - '^chore'
+      - '^docs:'
+      - merge conflict
       - Merge pull request
+      - Merge remote-tracking branch
       - Merge branch
+      - go mod tidy
+  groups:
+    - title: "New Features"
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 100
+    - title: "Security Updates"
+      regexp: '^.*?sec(\([[:word:]]+\))??!?:.+$'
+      order: 150
+    - title: "Bug Fixes"
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 200
+    - title: "Performance Improvements"
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 250
+    - title: "Dependency Updates"
+      regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
+      order: 300
+    - title: "Documentation Updates"
+      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
+      order: 400
+    - title: "Other Changes"
+      order: 9999
 
 release:
   github:
     owner: gizzahub
     name: gzh-cli-__PROJECT_NAME__
-  draft: false
+  draft: true
   prerelease: auto
+  mode: replace
   name_template: "v{{.Version}}"
+  header: |
+    ## {{ .ProjectName }} {{ .Tag }} ({{ .Date }})
+
+    Welcome to this new release!
+  footer: |
+    ## Thanks!
+
+    Those were the changes on {{ .Tag }}!
+
+    **Full Changelog**: https://github.com/gizzahub/gzh-cli-__PROJECT_NAME__/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+# Optional: Docker image building (uncomment to enable)
+# dockers:
+#   - id: gz-__PROJECT_NAME__-amd64
+#     ids:
+#       - gz-__PROJECT_NAME__
+#     image_templates:
+#       - "gizzahub/{{ .ProjectName }}:{{ .Tag }}-amd64"
+#       - "ghcr.io/gizzahub/{{ .ProjectName }}:{{ .Tag }}-amd64"
+#     dockerfile: Dockerfile
+#     use: buildx
+#     build_flag_templates:
+#       - "--pull"
+#       - "--platform=linux/amd64"
+#       - "--label=org.opencontainers.image.created={{.Date}}"
+#       - "--label=org.opencontainers.image.title={{.ProjectName}}"
+#       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#       - "--label=org.opencontainers.image.version={{.Version}}"
+#     goarch: amd64
+#
+#   - id: gz-__PROJECT_NAME__-arm64
+#     ids:
+#       - gz-__PROJECT_NAME__
+#     image_templates:
+#       - "gizzahub/{{ .ProjectName }}:{{ .Tag }}-arm64"
+#       - "ghcr.io/gizzahub/{{ .ProjectName }}:{{ .Tag }}-arm64"
+#     dockerfile: Dockerfile
+#     use: buildx
+#     build_flag_templates:
+#       - "--pull"
+#       - "--platform=linux/arm64"
+#       - "--label=org.opencontainers.image.created={{.Date}}"
+#       - "--label=org.opencontainers.image.title={{.ProjectName}}"
+#       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#       - "--label=org.opencontainers.image.version={{.Version}}"
+#     goarch: arm64
+#
+# docker_manifests:
+#   - name_template: "gizzahub/{{ .ProjectName }}:{{ .Tag }}"
+#     image_templates:
+#       - "gizzahub/{{ .ProjectName }}:{{ .Tag }}-amd64"
+#       - "gizzahub/{{ .ProjectName }}:{{ .Tag }}-arm64"
+#   - name_template: "gizzahub/{{ .ProjectName }}:latest"
+#     image_templates:
+#       - "gizzahub/{{ .ProjectName }}:{{ .Tag }}-amd64"
+#       - "gizzahub/{{ .ProjectName }}:{{ .Tag }}-arm64"

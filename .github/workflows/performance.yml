@@ -1,0 +1,68 @@
+name: Performance Benchmark
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  benchmark:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build Binary
+        run: make build
+
+      - name: Run Benchmark
+        id: benchmark
+        run: |
+          chmod +x scripts/benchmark.sh
+          ./scripts/benchmark.sh | tee benchmark-output.txt
+
+      - name: Check Performance Threshold
+        run: |
+          if grep -q "WARNING" benchmark-output.txt; then
+            echo "::warning::Performance degradation detected"
+            exit 0
+          else
+            echo "Performance within acceptable range"
+          fi
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: benchmark-output.txt
+          retention-days: 30
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('benchmark-output.txt', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Performance Benchmark Results\n\n\`\`\`\n${output}\n\`\`\``
+            });
