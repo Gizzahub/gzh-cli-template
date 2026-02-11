@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GO_VERSION: '1.24'
+  GO_VERSION: '1.25.7'
 
 jobs:
   # Quick lint check (runs first, fails fast)
@@ -43,7 +43,7 @@ jobs:
       matrix:
         # PR: Ubuntu only for speed, Push: all platforms
         os: ${{ github.event_name == 'pull_request' && fromJSON('["ubuntu-latest"]') || fromJSON('["ubuntu-latest", "macos-latest", "windows-latest"]') }}
-        go-version: ['1.24']
+        go-version: ['1.25.7']
 
     steps:
       - uses: actions/checkout@v4

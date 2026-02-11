@@ -5,19 +5,36 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
     commit-message:
-      prefix: "deps"
+      prefix: "chore(deps)"
+      include: "scope"
     labels:
       - "dependencies"
       - "go"
+    groups:
+      go-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
     commit-message:
-      prefix: "ci"
+      prefix: "chore(ci)"
+      include: "scope"
     labels:
       - "dependencies"
-      - "ci"
+      - "github-actions"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
