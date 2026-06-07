@@ -7,7 +7,7 @@ type ConfigBuilder struct {
 	verbose  bool
 	logLevel string
 	timeout  string
-	settings map[string]interface{}
+	settings map[string]any
 }
 
 // NewConfigBuilder creates a new ConfigBuilder with defaults.
@@ -17,7 +17,7 @@ func NewConfigBuilder() *ConfigBuilder {
 		verbose:  false,
 		logLevel: "info",
 		timeout:  "30s",
-		settings: make(map[string]interface{}),
+		settings: make(map[string]any),
 	}
 }
 
@@ -46,7 +46,7 @@ func (b *ConfigBuilder) WithTimeout(timeout string) *ConfigBuilder {
 }
 
 // WithSetting adds a custom setting.
-func (b *ConfigBuilder) WithSetting(key string, value interface{}) *ConfigBuilder {
+func (b *ConfigBuilder) WithSetting(key string, value any) *ConfigBuilder {
 	b.settings[key] = value
 	return b
 }
@@ -54,8 +54,8 @@ func (b *ConfigBuilder) WithSetting(key string, value interface{}) *ConfigBuilde
 // Build returns the configuration values.
 // Note: Returns raw values since this is a template.
 // In actual projects, this would return *config.Config.
-func (b *ConfigBuilder) Build() map[string]interface{} {
-	return map[string]interface{}{
+func (b *ConfigBuilder) Build() map[string]any {
+	return map[string]any{
 		"debug":     b.debug,
 		"verbose":   b.verbose,
 		"log_level": b.logLevel,
@@ -66,10 +66,10 @@ func (b *ConfigBuilder) Build() map[string]interface{} {
 
 // CommandBuilder builds test command scenarios.
 type CommandBuilder struct {
-	args   []string
-	flags  map[string]string
-	env    map[string]string
-	stdin  string
+	args  []string
+	flags map[string]string
+	env   map[string]string
+	stdin string
 }
 
 // NewCommandBuilder creates a new CommandBuilder.

@@ -26,7 +26,7 @@ type Config struct {
 	Timeout string `yaml:"timeout"`
 
 	// Custom application-specific settings
-	Settings map[string]interface{} `yaml:"settings"`
+	Settings map[string]any `yaml:"settings"`
 }
 
 // DefaultConfig returns the default configuration.
@@ -37,7 +37,7 @@ func DefaultConfig() *Config {
 		Verbose:  false,
 		LogLevel: "info",
 		Timeout:  "30s",
-		Settings: make(map[string]interface{}),
+		Settings: make(map[string]any),
 	}
 }
 
@@ -90,15 +90,15 @@ func (c *Config) Save(path string) error {
 }
 
 // Get retrieves a setting value by key.
-func (c *Config) Get(key string) (interface{}, bool) {
+func (c *Config) Get(key string) (any, bool) {
 	v, ok := c.Settings[key]
 	return v, ok
 }
 
 // Set stores a setting value by key.
-func (c *Config) Set(key string, value interface{}) {
+func (c *Config) Set(key string, value any) {
 	if c.Settings == nil {
-		c.Settings = make(map[string]interface{})
+		c.Settings = make(map[string]any)
 	}
 	c.Settings[key] = value
 }

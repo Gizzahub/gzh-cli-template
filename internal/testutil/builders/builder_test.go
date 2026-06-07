@@ -1,6 +1,7 @@
 package builders
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -26,7 +27,7 @@ func TestConfigBuilder(t *testing.T) {
 		t.Error("expected timeout to be 1m")
 	}
 
-	settings := cfg["settings"].(map[string]interface{})
+	settings := cfg["settings"].(map[string]any)
 	if settings["key1"] != "value1" {
 		t.Error("expected key1 setting")
 	}
@@ -43,13 +44,7 @@ func TestCommandBuilder(t *testing.T) {
 	args := cmd.BuildArgs()
 
 	// Check args are present
-	found := false
-	for _, arg := range args {
-		if arg == "subcommand" {
-			found = true
-			break
-		}
-	}
+	found := slices.Contains(args, "subcommand")
 	if !found {
 		t.Error("expected subcommand in args")
 	}
