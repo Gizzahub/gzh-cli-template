@@ -128,3 +128,28 @@ jobs:
           go-version: '1.26.4'
       - name: govulncheck
         run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+  # Bootstrap init script on Ubuntu + macOS (BSD/GNU sed)
+  bootstrap-init:
+    name: Bootstrap Init (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run init-project.sh
+        run: |
+          set -euo pipefail
+          bash scripts/init-project.sh mytool
+          test -d cmd/mytool
+          grep -q 'module github.com/gizzahub/gzh-cli-mytool' go.mod
+          ! grep -r '__PROJECT_NAME__' --include='*.go' --include='*.md' --include='Makefile' --include='*.yml' . || true
+          # placeholder may remain only inside init-project.sh itself
+          leftover=$(grep -r '__PROJECT_NAME__' --include='*.go' --include='*.md' --include='Makefile' --include='*.yml' --include='*.yaml' --include='*.mod' . | grep -v scripts/init-project.sh || true)
+          if [ -n "$leftover" ]; then
+            echo "leftover placeholders: $leftover"
+            exit 1
+          fi
+

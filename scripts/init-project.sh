@@ -1,13 +1,13 @@
 #!/bin/bash
-# init-project.sh - Initialize a new project from gzh-cli-template
-#
-# Usage: ./scripts/init-project.sh <project-name>
+# 스크립트명: init-project.sh
+# 용도: gzh-cli-template에서 새 프로젝트를 초기화 (placeholder 치환)
+# 사용법: ./scripts/init-project.sh <project-name>
 #
 # Example:
 #   ./scripts/init-project.sh mytool
 #   # Creates: gzh-cli-mytool, binary: gz-mytool
 
-set -e
+set -euo pipefail
 
 # Colors
 RED='\033[0;31m'
@@ -20,23 +20,47 @@ info() { echo -e "${GREEN}[INFO]${NC} $1"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
+# Portable in-place sed (GNU vs BSD). Never use bare `sed -i` — BSD treats the
+# next argument as a mandatory backup suffix and leaves the repo half-mutated.
+sed_inplace() {
+	local expr=$1
+	shift
+	if sed --version >/dev/null 2>&1; then
+		# GNU sed
+		sed -i -e "${expr}" "$@"
+	else
+		# BSD sed (macOS)
+		sed -i '' -e "${expr}" "$@"
+	fi
+}
+
 # Validate arguments
 if [ $# -lt 1 ]; then
-    echo "Usage: $0 <project-name>"
-    echo ""
-    echo "Example:"
-    echo "  $0 mytool"
-    echo "  # Creates project: gzh-cli-mytool"
-    echo "  # Binary name: gz-mytool"
-    echo "  # Module: github.com/gizzahub/gzh-cli-mytool"
-    exit 1
+	echo "Usage: $0 <project-name>"
+	echo ""
+	echo "Example:"
+	echo "  $0 mytool"
+	echo "  # Creates project: gzh-cli-mytool"
+	echo "  # Binary name: gz-mytool"
+	echo "  # Module: github.com/gizzahub/gzh-cli-mytool"
+	exit 1
 fi
 
 PROJECT_NAME="$1"
 
 # Validate project name (alphanumeric and hyphens only)
 if [[ ! "$PROJECT_NAME" =~ ^[a-z][a-z0-9-]*$ ]]; then
-    error "Project name must start with lowercase letter and contain only lowercase letters, numbers, and hyphens"
+	error "Project name must start with lowercase letter and contain only lowercase letters, numbers, and hyphens"
+fi
+
+# Preflight: required tools and template layout (fail before mutating anything)
+command -v sed >/dev/null 2>&1 || error "sed is required"
+command -v find >/dev/null 2>&1 || error "find is required"
+if [ ! -d "cmd/__PROJECT_NAME__" ]; then
+	error "Template directory cmd/__PROJECT_NAME__ not found. Are you in the template root?"
+fi
+if [ ! -f "go.mod" ]; then
+	error "go.mod not found. Are you in the template root?"
 fi
 
 # Derived names
@@ -49,38 +73,56 @@ info "Binary name: ${BINARY_NAME}"
 info "Module path: ${MODULE_PATH}"
 echo ""
 
-# Check if placeholder directory exists
-if [ ! -d "cmd/__PROJECT_NAME__" ]; then
-    error "Template directory cmd/__PROJECT_NAME__ not found. Are you in the template root?"
-fi
+# Smoke-test sed_inplace on a temp file before touching the tree
+_tmp=$(mktemp)
+echo "__PROJECT_NAME__" >"${_tmp}"
+sed_inplace "s/__PROJECT_NAME__/probe/g" "${_tmp}"
+grep -q probe "${_tmp}" || {
+	rm -f "${_tmp}"
+	error "sed_inplace smoke test failed (GNU/BSD sed incompatibility)"
+}
+rm -f "${_tmp}"
 
-# Replace placeholders in all files
 info "Replacing placeholders in files..."
+_count=0
+while IFS= read -r -d '' f; do
+	sed_inplace "s/__PROJECT_NAME__/${PROJECT_NAME}/g" "${f}"
+	_count=$((_count + 1))
+done < <(
+	find . -type f \( \
+		-name "*.go" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" \
+		-o -name "*.sh" -o -name "Makefile" -o -name "*.mod" \
+	\) -not -path "./.git/*" -not -path "./scripts/init-project.sh" -print0
+)
 
-# Find and replace in all text files
-find . -type f \( -name "*.go" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.sh" -o -name "Makefile" -o -name "*.mod" \) \
-    -not -path "./.git/*" \
-    -exec sed -i "s/__PROJECT_NAME__/${PROJECT_NAME}/g" {} \;
+if [ "${_count}" -eq 0 ]; then
+	error "No template files found to rewrite"
+fi
+info "Rewrote ${_count} files"
 
 info "Renaming directories..."
 
-# Rename cmd directory
+# Rename cmd directory (after content rewrite so failed sed never leaves a renamed tree)
 if [ -d "cmd/__PROJECT_NAME__" ]; then
-    mv "cmd/__PROJECT_NAME__" "cmd/${PROJECT_NAME}"
-    info "Renamed cmd/__PROJECT_NAME__ -> cmd/${PROJECT_NAME}"
+	mv "cmd/__PROJECT_NAME__" "cmd/${PROJECT_NAME}"
+	info "Renamed cmd/__PROJECT_NAME__ -> cmd/${PROJECT_NAME}"
+elif [ -d "cmd/${PROJECT_NAME}" ]; then
+	info "cmd/${PROJECT_NAME} already present"
+else
+	error "Neither cmd/__PROJECT_NAME__ nor cmd/${PROJECT_NAME} found after rewrite"
 fi
 
 # Update go.mod module path
 info "Updating go.mod..."
-sed -i "s|github.com/gizzahub/gzh-cli-${PROJECT_NAME}|${MODULE_PATH}|g" go.mod
-
-# Remove this init script (optional - keep for reference)
-# rm -f scripts/init-project.sh
+# After placeholder rewrite, module line may already be gzh-cli-<name>; force final module path
+sed_inplace "s|^module .*|module ${MODULE_PATH}|g" go.mod
 
 # Update scripts
 info "Updating scripts..."
 if [ -f "scripts/install.sh" ]; then
-    sed -i "s/gz-__PROJECT_NAME__/${BINARY_NAME}/g" scripts/install.sh
+	# BINARY may still contain placeholder or already-substituted name
+	sed_inplace "s/gz-__PROJECT_NAME__/${BINARY_NAME}/g" scripts/install.sh
+	sed_inplace "s/gz-${PROJECT_NAME}/${BINARY_NAME}/g" scripts/install.sh
 fi
 
 # Clean up old init-template.sh if exists
