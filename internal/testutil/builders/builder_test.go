@@ -27,7 +27,10 @@ func TestConfigBuilder(t *testing.T) {
 		t.Error("expected timeout to be 1m")
 	}
 
-	settings := cfg["settings"].(map[string]any)
+	settings, ok := cfg["settings"].(map[string]any)
+	if !ok {
+		t.Fatalf("expected settings to be map[string]any, got %T", cfg["settings"])
+	}
 	if settings["key1"] != "value1" {
 		t.Error("expected key1 setting")
 	}

@@ -20,7 +20,7 @@ type Config struct {
 	Verbose bool `yaml:"verbose"`
 
 	// LogLevel sets the logging level (debug, info, warn, error)
-	LogLevel string `yaml:"log_level"`
+	LogLevel string `yaml:"log_level"` //nolint:tagliatelle // Keep the public snake_case YAML key.
 
 	// Timeout for operations (e.g., "30s", "5m")
 	Timeout string `yaml:"timeout"`
@@ -57,7 +57,7 @@ func Load(path string) (*Config, error) {
 // LoadOrDefault loads configuration from the default locations,
 // falling back to default config if not found.
 func LoadOrDefault() (*Config, error) {
-	loader := coreconfig.NewLoader(appName).WithPaths(ConfigPaths()...)
+	loader := coreconfig.NewLoader(appName).WithPaths(Paths()...)
 	cfg := DefaultConfig()
 	if err := loader.LoadOrDefault(cfg); err != nil {
 		return nil, err
@@ -65,8 +65,8 @@ func LoadOrDefault() (*Config, error) {
 	return cfg, nil
 }
 
-// ConfigPaths returns the list of config file paths to search.
-func ConfigPaths() []string {
+// Paths returns the list of config file paths to search.
+func Paths() []string {
 	var paths []string
 
 	// Current directory

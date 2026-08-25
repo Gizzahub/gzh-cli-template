@@ -100,8 +100,8 @@ func TestGetSet(t *testing.T) {
 	}
 }
 
-func TestConfigPaths(t *testing.T) {
-	paths := ConfigPaths()
+func TestPaths(t *testing.T) {
+	paths := Paths()
 	if len(paths) == 0 {
 		t.Error("expected at least one config path")
 	}
