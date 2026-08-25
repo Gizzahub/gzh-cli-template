@@ -91,7 +91,7 @@ while IFS= read -r -d '' f; do
 done < <(
 	find . -type f \( \
 		-name "*.go" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" \
-		-o -name "*.sh" -o -name "Makefile" -o -name "*.mod" \
+		-o -name "*.sh" -o -name "*.mk" -o -name "Makefile" -o -name "*.mod" \
 	\) -not -path "./.git/*" -not -path "./scripts/init-project.sh" -print0
 )
 

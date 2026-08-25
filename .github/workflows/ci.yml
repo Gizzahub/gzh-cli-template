@@ -145,11 +145,12 @@ jobs:
           bash scripts/init-project.sh mytool
           test -d cmd/mytool
           grep -q 'module github.com/gizzahub/gzh-cli-mytool' go.mod
-          ! grep -r '__PROJECT_NAME__' --include='*.go' --include='*.md' --include='Makefile' --include='*.yml' . || true
           # placeholder may remain only inside init-project.sh itself
-          leftover=$(grep -r '__PROJECT_NAME__' --include='*.go' --include='*.md' --include='Makefile' --include='*.yml' --include='*.yaml' --include='*.mod' . | grep -v scripts/init-project.sh || true)
+          leftover=$(grep -r '__PROJECT_NAME__' --include='*.go' --include='*.md' --include='*.mk' --include='Makefile' --include='*.yml' --include='*.yaml' --include='*.mod' . | grep -v scripts/init-project.sh || true)
           if [ -n "$leftover" ]; then
             echo "leftover placeholders: $leftover"
             exit 1
           fi
-
+          GOWORK=off make deps
+          GOWORK=off make build
+          GOWORK=off make test
