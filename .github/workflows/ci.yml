@@ -72,6 +72,9 @@ jobs:
         run: go build -v ./...
 
       - name: Test
+        # Work around golang/go#72015: PowerShell can parse the extension in
+        # -coverprofile=coverage.out as a separate `.out` package argument.
+        shell: bash
         run: go test -v -race -coverprofile=coverage.out ./...
 
       - name: Upload coverage (Ubuntu only)
