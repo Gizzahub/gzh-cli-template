@@ -2,6 +2,8 @@ module github.com/gizzahub/gzh-cli-__PROJECT_NAME__
 
 go 1.26
 
+toolchain go1.26.6
+
 require github.com/gizzahub/gzh-cli-core v0.1.0
 
 require (
