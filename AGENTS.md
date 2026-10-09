@@ -1,4 +1,4 @@
-# CLAUDE.md
+# gzh-cli-template
 
 This file provides LLM-optimized guidance for Claude Code when working with this repository.
 
@@ -127,58 +127,6 @@ make quality    # Full quality check
 
 ---
 
-## Project Structure
-
-```
-.
-├── .make/                       # Modular Makefile
-│   ├── vars.mk                 # Variables
-│   ├── build.mk                # Build targets
-│   ├── test.mk                 # Test targets
-│   ├── quality.mk              # Quality targets
-│   ├── deps.mk                 # Dependency management
-│   ├── tools.mk                # Tool installation
-│   └── dev.mk                  # Development workflow
-├── cmd/
-│   ├── AGENTS_COMMON.md        # Common AI guidelines
-│   └── __PROJECT_NAME__/
-│       ├── AGENTS.md           # Module-specific guide
-│       ├── main.go             # Entry point
-│       ├── root.go             # Root command
-│       └── version.go          # Version management
-├── internal/                    # Private packages
-│   ├── config/                 # App-specific configuration
-│   ├── core/                   # Core business logic
-│   └── testutil/
-│       └── builders/           # Test fixture builders
-├── pkg/                         # Public APIs
-│   └── api/                    # Exported interfaces
-├── docs/
-│   ├── 00-overview/            # Overview docs
-│   ├── 10-getting-started/     # Getting started
-│   ├── 20-architecture/        # Architecture
-│   ├── 30-features/            # Features
-│   ├── 40-configuration/       # Configuration
-│   └── ARCHITECTURE.md         # Full structure
-├── examples/                    # Usage examples
-├── scripts/                     # Helper scripts
-├── tests/                       # Integration/E2E tests
-├── .github/
-│   ├── workflows/ci.yml        # CI (multi-OS, security)
-│   ├── workflows/release.yml   # Release automation
-│   └── dependabot.yml          # Dependency updates
-├── .claudeignore               # AI-excluded files
-├── .golangci.yml               # Linter config (v2)
-├── .goreleaser.yml             # Release automation
-├── .pre-commit-config.yaml     # Pre-commit hooks
-├── CLAUDE.md                   # This file
-├── go.mod                      # Go module
-├── Makefile                    # Build automation (modular)
-└── README.md                   # Project documentation
-```
-
----
-
 ## Important Rules
 
 ### Critical Requirements
@@ -201,9 +149,6 @@ make quality    # Full quality check
 {type}({scope}): {description}
 
 {body}
-
-Model: claude-{model}
-Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
 **Types**: feat, fix, docs, refactor, test, chore

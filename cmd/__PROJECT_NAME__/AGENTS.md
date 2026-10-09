@@ -14,18 +14,6 @@ Module-specific guidelines for the __PROJECT_NAME__ CLI module.
 
 ---
 
-## File Structure
-
-```
-cmd/__PROJECT_NAME__/
-├── AGENTS.md       # This file
-├── main.go         # Entry point (calls Execute())
-├── root.go         # Root command and subcommand registration
-└── version.go      # Version information management
-```
-
----
-
 ## Command Structure
 
 ### Root Command (`root.go`)
