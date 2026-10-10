@@ -50,9 +50,6 @@ make quality  # fmt + lint + test
 {type}({scope}): {description}
 
 {body}
-
-Model: claude-{model}
-Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
 **Types**: feat, fix, docs, refactor, test, chore
