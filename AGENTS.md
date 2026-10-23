@@ -2,7 +2,7 @@
 
 This file provides LLM-optimized guidance for Claude Code when working with this repository.
 
----
+______________________________________________________________________
 
 ## Project Context
 
@@ -18,20 +18,20 @@ This file provides LLM-optimized guidance for Claude Code when working with this
 - **Modular commands**: Each command is self-contained under `cmd/`
 - **Use shared library**: Common utilities from `gzh-cli-core`
 
----
+______________________________________________________________________
 
 ## Shared Library (gzh-cli-core)
 
 **IMPORTANT**: Use `gzh-cli-core` for common utilities. DO NOT create local duplicates.
 
-| Package | Import | Purpose |
-|---------|--------|---------|
-| logger | `gzh-cli-core/logger` | Structured logging |
-| testutil | `gzh-cli-core/testutil` | Test helpers (TempDir, Assert*, Capture) |
-| errors | `gzh-cli-core/errors` | Error types and wrapping |
-| config | `gzh-cli-core/config` | Config loading utilities |
-| cli | `gzh-cli-core/cli` | CLI flags and output |
-| version | `gzh-cli-core/version` | Version info |
+| Package  | Import                  | Purpose                                   |
+| -------- | ----------------------- | ----------------------------------------- |
+| logger   | `gzh-cli-core/logger`   | Structured logging                        |
+| testutil | `gzh-cli-core/testutil` | Test helpers (TempDir, Assert\*, Capture) |
+| errors   | `gzh-cli-core/errors`   | Error types and wrapping                  |
+| config   | `gzh-cli-core/config`   | Config loading utilities                  |
+| cli      | `gzh-cli-core/cli`      | CLI flags and output                      |
+| version  | `gzh-cli-core/version`  | Version info                              |
 
 ```go
 import (
@@ -41,38 +41,38 @@ import (
 )
 ```
 
----
+______________________________________________________________________
 
 ## Module-Specific Guides (AGENTS.md)
 
 **Read these before modifying code:**
 
-| Guide | Location | Purpose |
-|-------|----------|---------|
-| Common Rules | `cmd/AGENTS_COMMON.md` | Project-wide conventions |
-| CLI Module | `cmd/__PROJECT_NAME__/AGENTS.md` | CLI-specific rules |
+| Guide        | Location                         | Purpose                  |
+| ------------ | -------------------------------- | ------------------------ |
+| Common Rules | `cmd/AGENTS_COMMON.md`           | Project-wide conventions |
+| CLI Module   | `cmd/__PROJECT_NAME__/AGENTS.md` | CLI-specific rules       |
 
----
+______________________________________________________________________
 
 ## Internal Packages
 
-| Package | Purpose | Usage |
-|---------|---------|-------|
-| `internal/config` | App-specific configuration | `config.Load()`, `config.Save()` |
-| `internal/core` | Core business logic | Service interfaces |
-| `internal/testutil/builders` | Test fixtures | `builders.NewConfigBuilder()` |
+| Package                      | Purpose                    | Usage                            |
+| ---------------------------- | -------------------------- | -------------------------------- |
+| `internal/config`            | App-specific configuration | `config.Load()`, `config.Save()` |
+| `internal/core`              | Core business logic        | Service interfaces               |
+| `internal/testutil/builders` | Test fixtures              | `builders.NewConfigBuilder()`    |
 
 **Note**: Logger, errors, testutil are from `gzh-cli-core` (see Shared Library section)
 
----
+______________________________________________________________________
 
 ## Development Workflow
 
 ### Before Code Modification
 
 1. **Read AGENTS.md** for the module you're modifying
-2. Check existing code patterns in `internal/`
-3. Review CONTRIBUTING.md for guidelines
+1. Check existing code patterns in `internal/`
+1. Review CONTRIBUTING.md for guidelines
 
 ### Code Modification Process
 
@@ -83,7 +83,7 @@ make quality    # runs fmt + lint + test
 # 3. Commit with proper message format
 ```
 
----
+______________________________________________________________________
 
 ## Essential Commands Reference
 
@@ -125,7 +125,7 @@ make check      # Quick check (vet + lint)
 make quality    # Full quality check
 ```
 
----
+______________________________________________________________________
 
 ## Important Rules
 
@@ -154,7 +154,7 @@ make quality    # Full quality check
 **Types**: feat, fix, docs, refactor, test, chore
 **Scope**: REQUIRED (e.g., cmd, internal, pkg, make)
 
----
+______________________________________________________________________
 
 ## FAQ
 
@@ -179,6 +179,6 @@ A: Use `gzh-cli-core/testutil` - `testutil.TempDir()`, `testutil.AssertEqual()`
 **Q: What files should AI not modify?**
 A: See `.claudeignore`
 
----
+______________________________________________________________________
 
 **Last Updated**: 2024-12-05

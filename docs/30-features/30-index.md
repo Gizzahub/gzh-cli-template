@@ -2,17 +2,17 @@
 
 ## Feature Index
 
-| Feature | Description | Status |
-|---------|-------------|--------|
+| Feature                            | Description        | Status    |
+| ---------------------------------- | ------------------ | --------- |
 | [Core Feature](31-core-feature.md) | Main functionality | ✅ Stable |
-| Version Info | Display version | ✅ Stable |
+| Version Info                       | Display version    | ✅ Stable |
 
 ## Adding New Features
 
 1. Create command in `cmd/__PROJECT_NAME__/`
-2. Implement logic in `internal/`
-3. Add tests
-4. Document in `docs/30-features/`
+1. Implement logic in `internal/`
+1. Add tests
+1. Document in `docs/30-features/`
 
 ## Feature Template
 

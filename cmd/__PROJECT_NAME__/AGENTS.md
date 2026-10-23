@@ -4,7 +4,7 @@ Module-specific guidelines for the __PROJECT_NAME__ CLI module.
 
 **Parent**: See `cmd/AGENTS_COMMON.md` for common rules.
 
----
+______________________________________________________________________
 
 ## Module Overview
 
@@ -12,7 +12,7 @@ Module-specific guidelines for the __PROJECT_NAME__ CLI module.
 **Binary**: `gz-__PROJECT_NAME__`
 **Entry Point**: `main.go`
 
----
+______________________________________________________________________
 
 ## Command Structure
 
@@ -25,7 +25,7 @@ Module-specific guidelines for the __PROJECT_NAME__ CLI module.
 ### Adding New Commands
 
 1. Create `{command}.go` file
-2. Define command variable:
+1. Define command variable:
    ```go
    var myCmd = &cobra.Command{
        Use:   "mycommand",
@@ -37,12 +37,12 @@ Module-specific guidelines for the __PROJECT_NAME__ CLI module.
        },
    }
    ```
-3. Register in `init()` of root.go:
+1. Register in `init()` of root.go:
    ```go
    rootCmd.AddCommand(myCmd)
    ```
 
----
+______________________________________________________________________
 
 ## Key Patterns
 
@@ -67,7 +67,7 @@ func init() {
 - Use `fmt.Fprintln(os.Stderr, ...)` for errors
 - Consider structured output (JSON) with --output flag
 
----
+______________________________________________________________________
 
 ## Testing
 
@@ -81,7 +81,7 @@ func TestMyCommand(t *testing.T) {
 }
 ```
 
----
+______________________________________________________________________
 
 ## Dependencies
 
@@ -89,6 +89,6 @@ func TestMyCommand(t *testing.T) {
 - Internal packages from `internal/`
 - Public APIs from `pkg/`
 
----
+______________________________________________________________________
 
 **Last Updated**: 2024-12-05

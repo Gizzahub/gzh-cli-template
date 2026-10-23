@@ -36,14 +36,14 @@ settings:
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `version` | string | "1" | Config file version |
-| `debug` | bool | false | Enable debug mode |
-| `verbose` | bool | false | Enable verbose output |
-| `log_level` | string | "info" | Logging level |
-| `timeout` | string | "30s" | Operation timeout |
-| `settings` | map | {} | Custom settings |
+| Option      | Type   | Default | Description           |
+| ----------- | ------ | ------- | --------------------- |
+| `version`   | string | "1"     | Config file version   |
+| `debug`     | bool   | false   | Enable debug mode     |
+| `verbose`   | bool   | false   | Enable verbose output |
+| `log_level` | string | "info"  | Logging level         |
+| `timeout`   | string | "30s"   | Operation timeout     |
+| `settings`  | map    | {}      | Custom settings       |
 
 ## Environment Variables
 
@@ -66,9 +66,9 @@ gz-__PROJECT_NAME__ --debug --verbose --log-level=debug
 ## Configuration Priority
 
 1. CLI flags (highest)
-2. Environment variables
-3. Config file
-4. Defaults (lowest)
+1. Environment variables
+1. Config file
+1. Defaults (lowest)
 
 ## See Also
 

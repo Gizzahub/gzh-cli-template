@@ -17,11 +17,11 @@ gz-__PROJECT_NAME__ version
 
 ## Common Commands
 
-| Command | Description |
-|---------|-------------|
-| `gz-__PROJECT_NAME__ help` | Show help |
-| `gz-__PROJECT_NAME__ version` | Show version info |
-| `gz-__PROJECT_NAME__ [command]` | Run a command |
+| Command                         | Description       |
+| ------------------------------- | ----------------- |
+| `gz-__PROJECT_NAME__ help`      | Show help         |
+| `gz-__PROJECT_NAME__ version`   | Show version info |
+| `gz-__PROJECT_NAME__ [command]` | Run a command     |
 
 ## Example Workflow
 

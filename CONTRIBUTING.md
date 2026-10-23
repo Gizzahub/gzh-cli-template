@@ -5,28 +5,30 @@ Thank you for your interest in contributing!
 ## Development Setup
 
 1. Fork and clone the repository
-2. Run initialization if using template:
+1. Run initialization if using template:
    ```bash
    ./scripts/init-project.sh <your-project-name>
    ```
-3. Install dependencies: `make deps`
-4. Run tests: `make test`
+1. Install dependencies: `make deps`
+1. Run tests: `make test`
 
 ## Making Changes
 
 ### Before Submitting
 
 1. Run all quality checks:
+
    ```bash
    make quality
    ```
 
-2. Ensure tests pass:
+1. Ensure tests pass:
+
    ```bash
    make test
    ```
 
-3. Update documentation if needed
+1. Update documentation if needed
 
 ### Commit Message Format
 
@@ -37,6 +39,7 @@ Thank you for your interest in contributing!
 ```
 
 **Types**:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -49,9 +52,9 @@ Thank you for your interest in contributing!
 ### Pull Request Process
 
 1. Create a feature branch from `main`
-2. Make your changes
-3. Run `make quality`
-4. Submit a PR with clear description
+1. Make your changes
+1. Run `make quality`
+1. Submit a PR with clear description
 
 ## Code Style
 

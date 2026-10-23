@@ -2,7 +2,7 @@
 
 This document defines common rules that apply to all modules in gzh-cli-__PROJECT_NAME__.
 
----
+______________________________________________________________________
 
 ## Code Standards
 
@@ -33,7 +33,7 @@ var ErrNotFound = errors.New("resource not found")
 - Use table-driven tests for multiple cases
 - Aim for 80%+ coverage on core logic
 
----
+______________________________________________________________________
 
 ## Development Workflow
 
@@ -55,7 +55,7 @@ make quality  # fmt + lint + test
 **Types**: feat, fix, docs, refactor, test, chore
 **Scope**: Module name (e.g., cmd, internal, pkg)
 
----
+______________________________________________________________________
 
 ## Module Structure
 
@@ -70,7 +70,7 @@ cmd/{module}/
 └── {command}_test.go
 ```
 
----
+______________________________________________________________________
 
 ## Forbidden Patterns
 
@@ -88,7 +88,7 @@ cmd/{module}/
 - ✅ Structured logging
 - ✅ Graceful shutdown handling
 
----
+______________________________________________________________________
 
 ## Documentation Requirements
 
@@ -96,6 +96,6 @@ cmd/{module}/
 - Complex logic should have inline comments explaining "why"
 - README.md for each major package
 
----
+______________________________________________________________________
 
 **Last Updated**: 2024-12-05

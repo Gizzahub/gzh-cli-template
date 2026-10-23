@@ -1,15 +1,15 @@
 # gzh-cli-template
 
-Standard template for building gzh-cli-* CLI tools in Go.
+Standard template for building gzh-cli-\* CLI tools in Go.
 
 ## Using This Template
 
 ### Option 1: GitHub "Use this template" (Recommended)
 
 1. Click **"Use this template"** button on GitHub
-2. Create your new repository (e.g., `gzh-cli-mytool`)
-3. Clone your new repository
-4. Run the initialization script:
+1. Create your new repository (e.g., `gzh-cli-mytool`)
+1. Clone your new repository
+1. Run the initialization script:
 
 ```bash
 ./scripts/init-project.sh mytool
@@ -75,11 +75,11 @@ make test
 
 The template uses `__PROJECT_NAME__` as placeholder. The init script replaces:
 
-| Placeholder | Example |
-|-------------|---------|
-| `__PROJECT_NAME__` | `mytool` |
+| Placeholder                | Example          |
+| -------------------------- | ---------------- |
+| `__PROJECT_NAME__`         | `mytool`         |
 | `gzh-cli-__PROJECT_NAME__` | `gzh-cli-mytool` |
-| `gz-__PROJECT_NAME__` | `gz-mytool` |
+| `gz-__PROJECT_NAME__`      | `gz-mytool`      |
 
 ## Features
 

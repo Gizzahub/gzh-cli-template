@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial project setup from gzh-cli-template
 
 ### Changed
@@ -23,10 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - YYYY-MM-DD
 
 ### Added
+
 - Initial release
 - Basic CLI structure
 - Configuration management
 - Logging infrastructure
 
-[Unreleased]: https://github.com/gizzahub/gzh-cli-__PROJECT_NAME__/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/gizzahub/gzh-cli-__PROJECT_NAME__/releases/tag/v0.1.0
+[unreleased]: https://github.com/gizzahub/gzh-cli-__PROJECT_NAME__/compare/v0.1.0...HEAD

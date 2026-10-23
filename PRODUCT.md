@@ -21,12 +21,12 @@ It:
 
 This is a util project — a single PRODUCT.md is sufficient. It replaces a PRD.
 
-| 제공하는 것 (Is)                              | 되지 않을 것 (Is Not)                       |
-| --------------------------------------------- | ------------------------------------------- |
-| 신규 패밀리 리포의 시작 골격                  | 라이브러리 (import되지 않는다)              |
-| 토큰 치환 부트스트랩 스크립트                 | 대화형 스캐폴딩 도구·제너레이터 엔진        |
-| `.make/*.mk` 등 패밀리 표준 패턴의 기준 구현  | 다목적 Go 템플릿 (패밀리 전용)              |
-| GUIDELINES §3 베이스라인 충족 예시            | 런타임 프레임워크                           |
+| 제공하는 것 (Is)                             | 되지 않을 것 (Is Not)                |
+| -------------------------------------------- | ------------------------------------ |
+| 신규 패밀리 리포의 시작 골격                 | 라이브러리 (import되지 않는다)       |
+| 토큰 치환 부트스트랩 스크립트                | 대화형 스캐폴딩 도구·제너레이터 엔진 |
+| `.make/*.mk` 등 패밀리 표준 패턴의 기준 구현 | 다목적 Go 템플릿 (패밀리 전용)       |
+| GUIDELINES §3 베이스라인 충족 예시           | 런타임 프레임워크                    |
 
 ______________________________________________________________________
 
@@ -49,8 +49,7 @@ G2. **Zero placeholder residue**
 G3. **Generated repo resolves its dependencies**
 
 - Target: 생성된 리포가 devbox 밖에서 `go mod download` 성공
-- 현재 **불가능**. `go.mod`에 `replace github.com/gizzahub/gzh-cli-core =>
-  ../gzh-cli-core`가 **커밋되어 있고**, core v0.1.0은 미공개다. GUIDELINES §2
+- 현재 **불가능**. `go.mod`에 `replace github.com/gizzahub/gzh-cli-core => ../gzh-cli-core`가 **커밋되어 있고**, core v0.1.0은 미공개다. GUIDELINES §2
   ("replace 지시자는 로컬 개발 전용")를 템플릿 자신이 위반하며, 위반을 신규 리포마다
   복제한다
 

@@ -21,17 +21,17 @@ settings:
 Configuration is loaded in this order (highest priority first):
 
 1. CLI flags (`--verbose`, `--debug`)
-2. Environment variables (`GZ___PROJECT_NAME___DEBUG=true`)
-3. Config file (`~/.config/gz-__PROJECT_NAME__/config.yaml`)
-4. Default values
+1. Environment variables (`GZ___PROJECT_NAME___DEBUG=true`)
+1. Config file (`~/.config/gz-__PROJECT_NAME__/config.yaml`)
+1. Default values
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `GZ___PROJECT_NAME___DEBUG` | Enable debug mode | `false` |
-| `GZ___PROJECT_NAME___VERBOSE` | Enable verbose output | `false` |
-| `GZ___PROJECT_NAME___CONFIG` | Config file path | Auto-detected |
+| Variable                      | Description           | Default       |
+| ----------------------------- | --------------------- | ------------- |
+| `GZ___PROJECT_NAME___DEBUG`   | Enable debug mode     | `false`       |
+| `GZ___PROJECT_NAME___VERBOSE` | Enable verbose output | `false`       |
+| `GZ___PROJECT_NAME___CONFIG`  | Config file path      | Auto-detected |
 
 ## Verify Configuration
 

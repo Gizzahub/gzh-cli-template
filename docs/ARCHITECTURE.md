@@ -88,7 +88,7 @@ gzh-cli-__PROJECT_NAME__/
 └── go.mod                        # Go module definition
 ```
 
----
+______________________________________________________________________
 
 ## Layer Architecture
 
@@ -117,20 +117,20 @@ gzh-cli-__PROJECT_NAME__/
 └─────────────────────────────────────────────────────┘
 ```
 
----
+______________________________________________________________________
 
 ## Internal Packages
 
-| Package | Purpose | Key Types |
-|---------|---------|-----------|
-| `config` | Configuration management | `Config`, `Load()`, `Save()` |
-| `core` | Core business logic | `Service` interface |
-| `errors` | Custom error types | `ErrNotFound`, `Wrap()` |
-| `logger` | Structured logging | `Logger` interface, `SimpleLogger` |
-| `testutil` | Test utilities | `TempFile()`, `AssertEqual()` |
-| `testutil/builders` | Fluent test fixtures | `ConfigBuilder`, `CommandBuilder` |
+| Package             | Purpose                  | Key Types                          |
+| ------------------- | ------------------------ | ---------------------------------- |
+| `config`            | Configuration management | `Config`, `Load()`, `Save()`       |
+| `core`              | Core business logic      | `Service` interface                |
+| `errors`            | Custom error types       | `ErrNotFound`, `Wrap()`            |
+| `logger`            | Structured logging       | `Logger` interface, `SimpleLogger` |
+| `testutil`          | Test utilities           | `TempFile()`, `AssertEqual()`      |
+| `testutil/builders` | Fluent test fixtures     | `ConfigBuilder`, `CommandBuilder`  |
 
----
+______________________________________________________________________
 
 ## Key Design Principles
 
@@ -172,7 +172,7 @@ log := logger.New("mycomponent")
 log.Info("operation complete", "count", 42)
 ```
 
----
+______________________________________________________________________
 
 ## Data Flow
 
@@ -182,17 +182,17 @@ User Input → CLI (cmd/) → Service (internal/) → Output
          pkg/api/ (if external integration needed)
 ```
 
----
+______________________________________________________________________
 
 ## Testing Strategy
 
-| Layer | Test Type | Location | Coverage Target |
-|-------|-----------|----------|-----------------|
-| cmd/ | Unit + Integration | cmd/*_test.go | 70%+ |
-| internal/ | Unit | internal/*/*_test.go | 80%+ |
-| pkg/ | Unit | pkg/*/*_test.go | 85%+ |
-| Integration | Docker-based | tests/integration/ | - |
-| E2E | Full workflow | tests/e2e/ | - |
+| Layer       | Test Type          | Location              | Coverage Target |
+| ----------- | ------------------ | --------------------- | --------------- |
+| cmd/        | Unit + Integration | cmd/\*\_test.go       | 70%+            |
+| internal/   | Unit               | internal/*/*\_test.go | 80%+            |
+| pkg/        | Unit               | pkg/*/*\_test.go      | 85%+            |
+| Integration | Docker-based       | tests/integration/    | -               |
+| E2E         | Full workflow      | tests/e2e/            | -               |
 
 ### Test Utilities
 
@@ -209,17 +209,18 @@ func TestSomething(t *testing.T) {
 }
 ```
 
----
+______________________________________________________________________
 
 ## Configuration
 
 Priority (highest to lowest):
-1. CLI flags (`--verbose`, `--debug`)
-2. Environment variables (`GZ___PROJECT_NAME___DEBUG=true`)
-3. Config file (`~/.config/gz-__PROJECT_NAME__/config.yaml`)
-4. Defaults
 
----
+1. CLI flags (`--verbose`, `--debug`)
+1. Environment variables (`GZ___PROJECT_NAME___DEBUG=true`)
+1. Config file (`~/.config/gz-__PROJECT_NAME__/config.yaml`)
+1. Defaults
+
+______________________________________________________________________
 
 ## Build Automation
 
@@ -233,6 +234,6 @@ make install-tools  # Install dev tools
 make release-dry    # Test release
 ```
 
----
+______________________________________________________________________
 
 **Last Updated**: 2024-12-05
