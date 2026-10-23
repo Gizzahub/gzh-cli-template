@@ -75,7 +75,8 @@ func Paths() []string {
 	// Home directory
 	if home, err := os.UserHomeDir(); err == nil {
 		configDir := filepath.Join(home, ".config", "gz-"+appName)
-		paths = append(paths,
+		paths = append(
+			paths,
 			filepath.Join(configDir, "config.yml"),
 			filepath.Join(configDir, "config.yaml"),
 		)
