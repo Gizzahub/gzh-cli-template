@@ -1,7 +1,7 @@
 # .make/tools.mk - Tool installation
 # Included by main Makefile
 
-.PHONY: install-tools install-lint install-fumpt install-mdformat
+.PHONY: install-tools install-lint install-fumpt install-mdformat install-goreleaser
 
 install-tools: install-lint install-fumpt install-mdformat ## Install all development tools
 	@echo "✅ All tools installed"
@@ -53,10 +53,19 @@ install-mdformat: ## install the pinned Markdown bundle into bin/tools
 	@$(MDFORMAT_VERSION_OK) || { echo "mdformat version/plugin set mismatch: $(MDFORMAT)" >&2; exit 1; }
 	@$(MDFORMAT_DEPS_OK) || { echo "mdformat dependencies do not match $(MDFORMAT_CONSTRAINTS)" >&2; exit 1; }
 
-install-goreleaser: ## Install goreleaser
-	@echo "Installing goreleaser..."
-	@if ! command -v goreleaser >/dev/null 2>&1; then \
-		$(GO) install github.com/goreleaser/goreleaser/v2@v2.19.0; \
-	else \
-		echo "goreleaser already installed"; \
+# .github/workflows/release.yml의 goreleaser-action `version:`과 같은 값을 유지한다.
+# PATH의 goreleaser(mise shim 등)는 버전을 보장하지 못하므로 bin/tools에 고정 설치하고,
+# `go version -m`으로 실제 모듈 버전을 확인한다(ldflags 없는 빌드도 판별 가능).
+GORELEASER_VERSION := v2.19.0
+GORELEASER_MODULE := github.com/goreleaser/goreleaser/v2
+GORELEASER := $(CURDIR)/bin/tools/goreleaser$(shell $(GO) env GOEXE)
+GORELEASER_VERSION_OK = $(GO) version -m "$(GORELEASER)" 2>/dev/null | \
+	awk '$$1 == "mod" && $$2 == "$(GORELEASER_MODULE)" && $$3 == "$(GORELEASER_VERSION)" { found = 1 } END { exit !found }'
+
+install-goreleaser: ## install the pinned goreleaser into bin/tools
+	@mkdir -p "$(dir $(GORELEASER))"
+	@if [ ! -x "$(GORELEASER)" ] || ! $(GORELEASER_VERSION_OK); then \
+		echo "Installing goreleaser $(GORELEASER_VERSION) to $(GORELEASER)..."; \
+		GOBIN="$(dir $(GORELEASER))" $(GO) install $(GORELEASER_MODULE)@$(GORELEASER_VERSION) || exit 1; \
 	fi
+	@$(GORELEASER_VERSION_OK) || { echo "goreleaser installation did not produce $(GORELEASER_MODULE) $(GORELEASER_VERSION): $(GORELEASER)" >&2; exit 1; }

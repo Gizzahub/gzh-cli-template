@@ -39,13 +39,9 @@ watch: ## Watch for changes and run tests (requires entr)
 pre-commit: quality ## Run pre-commit checks
 	@echo "✅ Pre-commit checks passed"
 
-release-dry: ## Dry run release (goreleaser)
+release-dry: install-goreleaser ## Dry run release (pinned goreleaser)
 	@echo "Running release dry run..."
-	@if command -v goreleaser >/dev/null 2>&1; then \
-		goreleaser release --snapshot --clean; \
-	else \
-		echo "⚠️  goreleaser not installed. Run: make install-goreleaser"; \
-	fi
+	"$(GORELEASER)" release --snapshot --clean
 
 # ==============================================================================
 # Code Analysis
