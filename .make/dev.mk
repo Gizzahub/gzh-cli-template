@@ -39,9 +39,28 @@ watch: ## Watch for changes and run tests (requires entr)
 pre-commit: quality ## Run pre-commit checks
 	@echo "✅ Pre-commit checks passed"
 
-release-dry: install-goreleaser ## Dry run release (pinned goreleaser)
+release-dry: ## Dry run a rendered project release (pinned goreleaser)
+	@test -f go.mod && test -f .goreleaser.yml || { echo "release-dry requires go.mod and .goreleaser.yml" >&2; exit 1; }
+	@marker_status=0; grep -q '__PROJECT_' go.mod .goreleaser.yml || marker_status=$$?; \
+	if [ "$$marker_status" -eq 0 ]; then \
+		echo "release-dry requires a rendered project; run scripts/init-project.sh in a project copy first" >&2; \
+		exit 1; \
+	elif [ "$$marker_status" -ne 1 ]; then \
+		echo "release-dry could not inspect project markers" >&2; exit "$$marker_status"; \
+	fi
+	@$(MAKE) --no-print-directory install-goreleaser
 	@echo "Running release dry run..."
 	"$(GORELEASER)" release --snapshot --clean
+
+.PHONY: release-dry-guard-test release-template-prepare release-template-check
+release-dry-guard-test: ## Verify raw-template release refusal without changing module files
+	@bash scripts/test-release-dry.sh --guard-only
+
+release-template-prepare: ## Prepare a rendered isolated Git fixture without building a release
+	@bash scripts/test-release-dry.sh --prepare-only
+
+release-template-check: ## Initialize an isolated fixture and run its pinned nonpublishing release
+	@bash scripts/test-release-dry.sh
 
 # ==============================================================================
 # Code Analysis
